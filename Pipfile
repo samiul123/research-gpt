@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+langchain = "*"
+openai = "*"
+numpy = "*"
+pandas = "*"
+scikit-learn = "*"
+transformers = "*"
+torch = "*"
+"pdfminer.six" = "*"
+python-dotenv = "*"
+nltk = "*"
+pinecone = {extras = ["grpc"], version = "*"}
+langchain-community = "*"
+langchain-pinecone = "*"
+pinecone-client = {extras = ["grpc"], version = "*"}
+pymupdf = "*"
+pinecone-plugin-assistant = "*"
+llama-index = "*"
+llama-index-vector-stores-pinecone = "*"
+llama-index-readers-file = "*"
+
+[dev-packages]
+ipykernel = "*"
+
+[requires]
+python_version = "3.9"

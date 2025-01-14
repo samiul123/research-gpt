@@ -1,0 +1,11 @@
+langchain
+pinecone-client
+openai
+numpy
+pandas
+scikit-learn
+transformers
+torch
+pdfminer.six
+python-dotenv
+nltk

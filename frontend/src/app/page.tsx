@@ -1,101 +1,158 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState } from "react";
+import { TextField, IconButton, Box, Typography } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import CloseIcon from "@mui/icons-material/Close";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import ImageIcon from "@mui/icons-material/Image";
+import DescriptionIcon from "@mui/icons-material/Description";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+
+const Chat = () => {
+  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
+  const [input, setInput] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleSend = () => {
+    if (input.trim()) {
+      setMessages([...messages, { sender: "User", text: input }]);
+      setInput("");
+      setTimeout(() => {
+        setMessages((prev) => [...prev, { sender: "ChatGPT", text: "This is a response!" }]);
+      }, 1000);
+    }
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = event.target.files?.[0] || null;
+    setFile(uploadedFile);
+  };
+
+  const handleFileRemove = () => {
+    setFile(null);
+  };
+
+  const getFileIcon = (fileName: string) => {
+    const extension = fileName.split(".").pop()?.toLowerCase();
+    switch (extension) {
+      case "pdf":
+        return <PictureAsPdfIcon fontSize="small" sx={{ color: "red", mr: 1 }} />;
+      case "jpg":
+      case "jpeg":
+      case "png":
+      case "gif":
+        return <ImageIcon fontSize="small" sx={{ color: "blue", mr: 1 }} />;
+      case "doc":
+      case "docx":
+      case "txt":
+        return <DescriptionIcon fontSize="small" sx={{ color: "green", mr: 1 }} />;
+      default:
+        return <InsertDriveFileIcon fontSize="small" sx={{ color: "gray", mr: 1 }} />;
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <Box className="flex flex-col h-screen bg-gradient-to-b from-gray-800 items-center gap-10">
+      
+      {/* Messages Area */}
+      <Box className="flex-1 overflow-y-auto p-4 w-full md:w-3/4 lg:w-1/2">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`flex ${
+              msg.sender === "User" ? "justify-end" : "justify-start"
+            } mb-2`}
+          >
+            <div
+              className={`max-w-sm p-3 rounded-lg ${
+                msg.sender === "User"
+                  ? "bg-black text-white"
+                  : "bg-gray-700 text-white"
+              }`}
+            >
+              {msg.text}
+            </div>
+          </div>
+        ))}
+      </Box>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      <Box className="w-4/5 md:w-3/4 lg:w-1/2 mb-5">
+        {file && (
+          <Box className="mb-2 p-2 bg-green-400 rounded-lg flex items-center justify-between">
+            <Box
+              className="flex items-center overflow-hidden"
+              sx={{ flexGrow: 1, minWidth: 0 }}
+            >
+              {getFileIcon(file.name)}
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "black",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  ml: 1,
+                }}
+                title={file.name}
+              >
+                {file.name}
+              </Typography>
+            </Box>
+            <IconButton size="small" onClick={handleFileRemove}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Box>
+        )}
+
+    
+        <Box className="bg-gray-700 flex items-center p-2 rounded-lg">
+          <IconButton component="label" color="inherit" className="mr-2">
+            <AttachFileIcon />
+            <input type="file" hidden onChange={handleFileUpload} />
+          </IconButton>
+
+          <TextField
+            variant="outlined"
+            fullWidth
+            size="medium"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message..."
+            multiline
+            maxRows={4}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                padding: "10px",
+                "& fieldset": { borderColor: "transparent" },
+                "&:hover fieldset": { borderColor: "transparent" },
+                "&.Mui-focused fieldset": { borderColor: "transparent" },
+              },
+              textarea: {
+                color: "white",
+                overflow: "auto",
+                "&::-webkit-scrollbar": {
+                  width: "4px",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "white",
+                  borderRadius: "4px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  backgroundColor: "transparent",
+                },
+              },
+            }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+          <IconButton color="inherit" onClick={handleSend}>
+            <SendIcon />
+          </IconButton>
+        </Box>
+      </Box>
+    </Box>
   );
-}
+};
+
+export default Chat;

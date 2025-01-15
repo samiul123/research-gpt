@@ -23,6 +23,7 @@ pinecone-plugin-assistant = "*"
 llama-index = "*"
 llama-index-vector-stores-pinecone = "*"
 llama-index-readers-file = "*"
+flask = "*"
 
 [dev-packages]
 ipykernel = "*"

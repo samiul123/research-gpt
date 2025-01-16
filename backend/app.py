@@ -4,10 +4,11 @@ from utils import PyMuPDFReader_v2
 from flask import Flask, Response, request, jsonify, stream_with_context
 import sys
 import logging
-
 root = logging.getLogger()
 handler = logging.StreamHandler(sys.stdout)
 root.addHandler(handler)
+
+from flask_cors import CORS
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -75,7 +76,7 @@ query_engine = RetrieverQueryEngine(retriever=retriever, response_synthesizer=sy
 
 
 app = Flask(__name__)
-
+CORS(app)
 # handler = logging.StreamHandler()
 # app.logger.addHandler(handler)
 

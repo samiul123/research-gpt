@@ -24,6 +24,7 @@ llama-index = "*"
 llama-index-vector-stores-pinecone = "*"
 llama-index-readers-file = "*"
 flask = "*"
+flask-cors = "*"
 
 [dev-packages]
 ipykernel = "*"

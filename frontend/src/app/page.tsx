@@ -14,10 +14,9 @@ const Chat = () => {
 
   const handleSend = async () => {
     if (input.trim() || file) {
-      // Add user message to the chat
+
       setMessages([...messages, { sender: "User", text: input, file: file }]);
-      setInput("");
-      setFile(null);
+      
       setIsStreaming(true);
   
       const formData = new FormData();
@@ -25,9 +24,11 @@ const Chat = () => {
       if (file) {
         formData.append("file", file);
       }
+      setInput("");
+      setFile(null);
   
       try {
-        const response = await fetch("http://127.0.0.1:5000/query", {
+        const response = await fetch("http://127.0.0.1:5001/api/query", {
           method: "POST",
           body: formData,
         });
@@ -40,17 +41,14 @@ const Chat = () => {
         const decoder = new TextDecoder("utf-8");
         let partialMessage = "";
   
-        // Add initial placeholder for streaming response
         setMessages((prev) => [...prev, { sender: "ChatGPT", text: "" }]);
   
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
   
-          // Decode the chunk and append it to the partial message
           partialMessage += decoder.decode(value, { stream: true });
   
-          // Update the last message in the chat
           setMessages((prev) => {
             const updatedMessages = [...prev];
             updatedMessages[updatedMessages.length - 1] = {
@@ -61,7 +59,7 @@ const Chat = () => {
           });
         }
   
-        setIsStreaming(false); // Mark streaming as completed
+        setIsStreaming(false);
       } catch (error) {
         console.error("Error streaming response:", error);
         setMessages((prev) => [
@@ -69,8 +67,9 @@ const Chat = () => {
           { sender: "ChatGPT", text: "Failed to fetch response." },
         ]);
         setIsStreaming(false);
+        setFile(null);
       } finally {
-        setFile(null); // Clear file after sending
+        setFile(null);
       }
     }
   };
@@ -110,6 +109,7 @@ const Chat = () => {
         ))}
       </Box>
 
+      {/* Input Area */}
       <Box className="w-4/5 md:w-3/4 lg:w-1/2 mb-5">
         {file && <Attachment file={file} onRemove={handleFileRemove} />}
 

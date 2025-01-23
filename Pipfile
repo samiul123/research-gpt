@@ -25,6 +25,10 @@ llama-index-vector-stores-pinecone = "*"
 llama-index-readers-file = "*"
 flask = "*"
 flask-cors = "*"
+sqlalchemy = "*"
+flask-sqlalchemy = "*"
+marshmallow = "*"
+marshmallow-sqlalchemy = "*"
 
 [dev-packages]
 ipykernel = "*"
